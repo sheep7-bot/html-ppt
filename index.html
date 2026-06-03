@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML PPT 作品集</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, 'Microsoft YaHei', sans-serif;
+      background: #0f0f1a;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 2.8em;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .subtitle {
+      color: #8892b0;
+      font-size: 1.1em;
+      margin-bottom: 50px;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 900px;
+      width: 100%;
+    }
+    .card {
+      background: linear-gradient(145deg, #1a1a2e, #16213e);
+      border-radius: 16px;
+      padding: 30px;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(102, 126, 234, 0.4);
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.15);
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .card:hover::before { opacity: 1; }
+    .card-icon { font-size: 2.5em; margin-bottom: 16px; }
+    .card-title {
+      font-size: 1.3em;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .card-desc {
+      color: #8892b0;
+      font-size: 0.9em;
+      line-height: 1.6;
+    }
+    .card-tag {
+      display: inline-block;
+      background: rgba(102, 126, 234, 0.15);
+      color: #667eea;
+      font-size: 0.75em;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-top: 14px;
+    }
+    footer {
+      margin-top: 60px;
+      color: #4a4a6a;
+      font-size: 0.85em;
+      text-align: center;
+    }
+    footer a { color: #667eea; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>🎨 HTML PPT 作品集</h1>
+  <p class="subtitle">Claude Code AI 生成的交互式 HTML 幻灯片</p>
+
+  <div class="grid">
+    <a href="works/portfolio-deck/index.html" class="card">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">Portfolio Deck</div>
+      <div class="card-desc">个人作品集展示幻灯片，包含项目介绍、技术栈展示与联系方式</div>
+      <div class="card-tag">portfolio-deck</div>
+    </a>
+
+    <a href="works/ppt-test/index.html" class="card">
+      <div class="card-icon">🧪</div>
+      <div class="card-title">PPT Test</div>
+      <div class="card-desc">功能测试与实验性 PPT，探索不同的动画效果与布局</div>
+      <div class="card-tag">ppt-test</div>
+    </a>
+  </div>
+
+  <footer>
+    <p>🤖 由 <a href="https://claude.ai/code">Claude Code</a> + html-ppt-skill 生成 · <a href="https://github.com/sheep7-bot/html-ppt">GitHub</a></p>
+  </footer>
+</body>
+</html>
