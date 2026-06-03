@@ -1,6 +1,6 @@
 # 🎨 HTML PPT 作品集
 
-> 使用 [Claude Code](https://claude.ai/code) 的 `html-ppt-skill` 和 `guizang-ppt-skill` 生成的交互式 HTML 幻灯片作品合集。
+> 交互式 HTML 幻灯片作品合集。
 
 ## 📂 作品列表
 
