@@ -35,8 +35,4 @@ python -m http.server 8080
 - WebGL 背景动画
 - 响应式设计
 - GitHub Pages 部署
-- Claude Code AI 辅助生成
 
----
-
-📌 *由 Claude Code + html-ppt-skill 生成*
