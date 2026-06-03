@@ -614,6 +614,8 @@ if(motion){
     }
     animate(all,{opacity:[0,1],y:[16,0]},{duration:.55,delay:stagger(.12,{start:.1}),easing:EASE});
   };
+  // 修复首帧空白：go(0) 在 motion 模块加载前已执行，需补调首帧动画
+  window.__playSlide(window.__currentSlideIndex);
 }
 </script>
 
