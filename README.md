@@ -1,6 +1,6 @@
 # 🎨 HTML PPT 作品集
 
-> 交互式 HTML 幻灯片作品合集。
+交互式 HTML 幻灯片作品合集，纯前端实现，无需 PowerPoint。
 
 ## 📂 作品列表
 
@@ -35,4 +35,3 @@ python -m http.server 8080
 - WebGL 背景动画
 - 响应式设计
 - GitHub Pages 部署
-
