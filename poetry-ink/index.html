@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>此情可待 · 中国伤感诗词</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* 🖋 墨水经典 */
+    --ink:#0a0a0b;--ink-rgb:10,10,11;
+    --paper:#f1efea;--paper-rgb:241,239,234;
+    --paper-tint:#e8e5de;--ink-tint:#18181a;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --serif-en:"Playfair Display","Source Serif 4",Georgia,serif;
+    --serif-body-en:"Source Serif 4",Georgia,serif;
+    --serif-zh:"Noto Serif SC",source-han-serif-sc,serif;
+    --sans-zh:"Noto Sans SC",source-han-sans-sc,sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--sans-zh);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+  /* === WebGL 双背景 === */
+  canvas.bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;transition:opacity 1.2s ease}
+  canvas#bg-light{opacity:0}
+  canvas#bg-dark{opacity:1}
+  body.light-bg canvas#bg-light{opacity:1}
+  body.light-bg canvas#bg-dark{opacity:0}
+  body.low-power canvas.bg{display:none!important}
+
+  /* === Deck 横向翻页 === */
+  #deck{position:fixed;inset:0;width:10000vw;height:100vh;display:flex;flex-wrap:nowrap;transition:transform .9s cubic-bezier(.77,0,.175,1);z-index:10;will-change:transform}
+  .slide{width:100vw;height:100vh;flex:0 0 100vw;position:relative;padding:6vh 6vw 10vh 6vw;display:flex;flex-direction:column;overflow:hidden}
+  .slide.light{color:var(--ink);background:var(--paper)}
+  .slide.dark{color:var(--paper);background:var(--ink)}
+
+  .slide::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;transition:background .7s ease}
+  .slide.light::before{background:rgba(var(--paper-rgb),.78);backdrop-filter:blur(3px)}
+  .slide.dark::before{background:rgba(var(--ink-rgb),.78);backdrop-filter:blur(3px)}
+  .slide.hero.light::before{background:rgba(var(--paper-rgb),.16);backdrop-filter:none}
+  .slide.hero.dark::before{background:rgba(var(--ink-rgb),.12);backdrop-filter:none}
+  .slide.hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none}
+  .slide.hero.light::after{background:linear-gradient(180deg,rgba(var(--paper-rgb),.28) 0%,rgba(var(--paper-rgb),0) 14%,rgba(var(--paper-rgb),0) 86%,rgba(var(--paper-rgb),.28) 100%)}
+  .slide.hero.dark::after{background:linear-gradient(180deg,rgba(var(--ink-rgb),.32) 0%,rgba(var(--ink-rgb),0) 14%,rgba(var(--ink-rgb),0) 86%,rgba(var(--ink-rgb),.32) 100%)}
+
+  /* === 杂志镶边 === */
+  .chrome{display:flex;justify-content:space-between;align-items:flex-start;font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;opacity:.7}
+  .chrome .left,.chrome .right{display:flex;gap:2.4em;align-items:center}
+  .chrome .sep{width:40px;height:1px;background:currentColor;opacity:.4}
+  .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.55}
+  .foot .title{font-family:var(--serif-zh);font-weight:400;letter-spacing:.05em;text-transform:none;opacity:.75;font-size:13px}
+
+  /* === 排版系统 === */
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;opacity:.6;margin-bottom:2.6vh}
+  .display{font-family:var(--serif-en);font-weight:700;font-size:11vw;line-height:.92;letter-spacing:-.025em}
+  .display-zh{font-family:var(--serif-zh);font-weight:700;font-size:7.8vw;line-height:1.04;letter-spacing:-.005em}
+  .h1-zh{font-family:var(--serif-zh);font-weight:700;font-size:4.6vw;line-height:1.12;letter-spacing:-.005em}
+  .h2-zh{font-family:var(--serif-zh);font-weight:600;font-size:3.2vw;line-height:1.2;letter-spacing:0}
+  .h3-zh{font-family:var(--serif-zh);font-weight:500;font-size:1.9vw;line-height:1.35}
+  .body-zh{font-family:var(--sans-zh);font-weight:400;font-size:max(15px,1.22vw);line-height:1.75;opacity:.82;letter-spacing:.01em}
+  .body-serif{font-family:var(--serif-zh);font-weight:400;font-size:max(15px,1.3vw);line-height:1.65;opacity:.88}
+  .lead{font-family:var(--serif-zh);font-weight:400;font-size:1.9vw;line-height:1.4;opacity:.85}
+  .meta{font-family:var(--mono);font-size:max(11px,.88vw);letter-spacing:.16em;text-transform:uppercase;opacity:.6}
+  .ghost{font-family:var(--serif-en);font-weight:900;font-size:34vw;line-height:.8;opacity:.04;letter-spacing:-.04em;position:absolute;font-feature-settings:"tnum"}
+  em{font-style:italic;font-family:var(--serif-en)}
+
+  /* === 布局 === */
+  .col{display:flex;flex-direction:column;gap:2.4vh}
+  .row{display:flex;align-items:center;gap:3vw}
+  .center{align-items:center;justify-content:center;text-align:center}
+  .fill{flex:1}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:4vw;flex:1;align-items:center}
+  .rule{width:100%;height:1px;background:currentColor;opacity:.25;margin:3vh 0}
+
+  /* === 引用框 === */
+  .callout{padding:3vh 2.4vw;border-left:3px solid currentColor;position:relative;font-family:var(--serif-zh);font-size:max(15px,1.2vw);line-height:1.55;opacity:.92}
+  .slide.light .callout{background:rgba(var(--ink-rgb),.04)}
+  .slide.dark .callout{background:rgba(var(--paper-rgb),.04)}
+
+  /* === 印章 === */
+  .seal{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border:2.5px solid currentColor;font-family:var(--serif-zh);font-size:15px;font-weight:700;letter-spacing:.06em;writing-mode:vertical-rl;text-orientation:upright;transform:rotate(8deg);user-select:none;flex-shrink:0}
+
+  /* === 墨线 === */
+  .ink-line{width:100px;height:1.5px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.25),rgba(0,0,0,.08),transparent);margin:0 auto}
+
+  /* === 竖排诗句 === */
+  .verse-v{font-family:var(--serif-zh);font-weight:400;font-size:2.1vw;line-height:2.2;letter-spacing:.06em;writing-mode:vertical-rl;text-orientation:mixed;max-height:60vh}
+  .verse-v em{font-style:normal;font-weight:700;font-size:1.15em}
+  .verse-note{font-family:var(--mono);font-size:11px;letter-spacing:.18em;opacity:.5;margin-top:2vh}
+
+  /* === 水墨人物 SVG === */
+  .ink-fig{position:absolute;pointer-events:none;z-index:0;opacity:.4}
+
+  /* === 黑胶唱片 === */
+  .vinyl-player{position:fixed;bottom:3.5vh;right:3.5vw;z-index:50;cursor:pointer;user-select:none}
+  .vinyl-base{width:80px;height:80px;background:#1a1a1a;border-radius:4px;position:relative;box-shadow:0 4px 20px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.05);transition:transform .3s ease}
+  .vinyl-player:hover .vinyl-base{transform:scale(1.06)}
+  .vinyl-disc{position:absolute;top:7px;left:7px;width:66px;height:66px;border-radius:50%;background:repeating-radial-gradient(circle at center,#111 0,#1a1a1a 1.4px,#222 1.4px,#222 1.8px,#1a1a1a 1.8px,#1a1a1a 2.8px,#222 2.8px,#222 3.2px,#181818 3.2px,#181818 4.6px,#222 4.6px,#222 5px,#1a1a1a 5px,#1a1a1a 6.4px,#202020 6.4px,#202020 6.8px,#181818 6.8px,#181818 8.2px,#222 8.2px,#222 8.6px,#1a1a1a 8.6px,#1a1a1a 10px,#202020 10px,#202020 10.4px,#181818 10.4px,#181818 12px);box-shadow:0 2px 6px rgba(0,0,0,.4);animation:none}
+  .vinyl-player.playing .vinyl-disc{animation:spin 3s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .vinyl-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;background:#c41e3a;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.5)}
+  .vinyl-label span{font-size:6px;color:#fff;font-weight:700;letter-spacing:.04em;line-height:1.1;text-align:center}
+  .vinyl-spindle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:7px;height:7px;border-radius:50%;background:#999;z-index:2;box-shadow:0 0 2px rgba(0,0,0,.6)}
+  .tonearm-base{position:absolute;top:3px;right:-10px;width:12px;height:12px;background:#333;border-radius:50%;box-shadow:0 1px 2px rgba(0,0,0,.5)}
+  .tonearm{position:absolute;top:6px;right:2px;width:2px;height:26px;background:#555;transform-origin:top center;transform:rotate(28deg);border-radius:1px;transition:transform .5s ease;box-shadow:0 1px 2px rgba(0,0,0,.4)}
+  .vinyl-player.playing .tonearm{transform:rotate(21deg)}
+  .tonearm::after{content:'';position:absolute;bottom:-3px;left:-2px;width:6px;height:5px;background:#777;border-radius:1px}
+  .play-dot{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:4px;height:4px;background:#555;border-radius:50%;transition:background .4s}
+  .vinyl-player.playing .play-dot{background:#c41e3a;box-shadow:0 0 5px rgba(196,30,58,.5)}
+
+  /* === Toast === */
+  .music-toast{position:fixed;top:2.5vh;left:50%;transform:translateX(-50%) translateY(-120px);z-index:60;background:rgba(var(--paper-rgb),.92);border:1px solid rgba(var(--ink-rgb),.1);padding:9px 24px;font-size:12px;color:var(--ink);letter-spacing:.1em;transition:transform .6s ease;pointer-events:none}
+  .music-toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* === 水印 === */
+  .wm-layer{position:fixed;inset:0;pointer-events:none;z-index:45;overflow:hidden}
+  .wm-layer span{position:absolute;font-size:34px;font-weight:600;color:rgba(0,0,0,.035);white-space:nowrap;user-select:none;letter-spacing:.16em;font-family:var(--serif-zh);transform:rotate(-16deg)}
+  .wm-layer span:nth-child(1){top:4%;left:2%}.wm-layer span:nth-child(2){top:4%;left:34%}.wm-layer span:nth-child(3){top:4%;left:64%}
+  .wm-layer span:nth-child(4){top:26%;left:10%}.wm-layer span:nth-child(5){top:26%;left:44%}.wm-layer span:nth-child(6){top:26%;left:74%}
+  .wm-layer span:nth-child(7){top:50%;left:2%}.wm-layer span:nth-child(8){top:50%;left:36%}.wm-layer span:nth-child(9){top:50%;left:64%}
+  .wm-layer span:nth-child(10){top:74%;left:10%}.wm-layer span:nth-child(11){top:74%;left:42%}.wm-layer span:nth-child(12){top:74%;left:72%}
+
+  /* === 响应式 === */
+  @media(max-width:900px){
+    .display{font-size:16vw}.display-zh{font-size:12vw}.h1-zh{font-size:7vw}
+    .verse-v{font-size:3.2vw;writing-mode:horizontal-tb;max-height:none}
+    .split{grid-template-columns:1fr}
+    .ink-fig{display:none}
+    .vinyl-player{bottom:2vh;right:2vw}
+    .wm-layer span{font-size:22px}
+  }
+
+  /* === 导航 === */
+  #nav{position:fixed;left:50%;bottom:2.6vh;transform:translateX(-50%);z-index:30;display:flex;gap:10px;padding:8px 14px;border-radius:999px;background:rgba(0,0,0,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  #nav .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:all .3s ease;border:0;padding:0}
+  #nav .dot:hover{background:rgba(255,255,255,.5);transform:scale(1.15)}
+  #nav .dot.active{background:rgba(255,255,255,.95);width:22px;border-radius:999px}
+  body.light-bg #nav{background:rgba(255,255,255,.25)}
+  body.light-bg #nav .dot{background:rgba(var(--ink-rgb),.25)}
+  body.light-bg #nav .dot.active{background:rgba(var(--ink-rgb),.9)}
+  #hint{position:fixed;bottom:3vh;left:3vw;z-index:30;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.35;mix-blend-mode:difference;color:#aaa}
+  body.low-power #hint{opacity:.72;color:var(--paper);mix-blend-mode:normal}
+  body.light-bg.low-power #hint{color:var(--ink)}
+
+  /* === 动效 === */
+  [data-anim]{opacity:1}
+  body.motion-ready [data-anim]{opacity:0}
+  body.motion-ready [data-anim="left"]{transform:translateX(-24px)}
+  body.motion-ready [data-anim="right"]{transform:translateX(24px)}
+  body.motion-ready [data-anim="line"]{opacity:0;transform:translateY(10px)}
+  body.low-power #deck{transition:none!important}
+  body.low-power *{animation:none!important;transition:none!important}
+  body.low-power.motion-ready [data-anim]{opacity:1!important;transform:none!important}
+</style>
+</head>
+<body>
+<script>
+  (function(){
+    const KEY='guizang-ppt-low-power';
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const stored=localStorage.getItem(KEY);
+    window.__lowPowerMode=stored==='1'||(stored===null&&reduced);
+    function updateHint(){
+      const hint=document.getElementById('hint');
+      if(hint) hint.textContent=`← → 翻页 · B ${window.__lowPowerMode?'动态':'静态'} · ESC 索引`;
+    }
+    window.__setLowPowerMode=function(on,opts={}){
+      window.__lowPowerMode=!!on;
+      document.body.classList.toggle('low-power',window.__lowPowerMode);
+      if(opts.persist!==false) localStorage.setItem(KEY,window.__lowPowerMode?'1':'0');
+      if(window.__lowPowerMode&&document.getAnimations) document.getAnimations().forEach(a=>a.cancel());
+      updateHint();
+      dispatchEvent(new CustomEvent('ppt-low-power-change',{detail:{on:window.__lowPowerMode}}));
+      if(window.__playSlide) window.__playSlide(window.__currentSlideIndex||0);
+    };
+    document.body.classList.toggle('low-power',window.__lowPowerMode);
+    addEventListener('DOMContentLoaded',updateHint,{once:true});
+  })();
+</script>
+
+<canvas id="bg-dark" class="bg"></canvas>
+<canvas id="bg-light" class="bg"></canvas>
+<div id="hint">← → · B 静态 · ESC 索引</div>
+
+<!-- ===== 水印 ===== -->
+<div class="wm-layer">
+  <span>羊羽ppt</span><span>羊羽ppt</span><span>羊羽ppt</span>
+  <span>羊羽ppt</span><span>羊羽ppt</span><span>羊羽ppt</span>
+  <span>羊羽ppt</span><span>羊羽ppt</span><span>羊羽ppt</span>
+  <span>羊羽ppt</span><span>羊羽ppt</span><span>羊羽ppt</span>
+</div>
+
+<!-- ===== 音乐提示 ===== -->
+<div class="music-toast" id="musicToast">🎵 点击右下黑胶 · 古琴相伴</div>
+
+<!-- ===== 黑胶唱片 ===== -->
+<div class="vinyl-player" id="vinylPlayer" title="播放/暂停">
+  <div class="vinyl-base">
+    <div class="vinyl-disc" id="vinylDisc">
+      <div class="vinyl-label"><span>古<br>琴</span></div>
+      <div class="vinyl-spindle"></div>
+    </div>
+    <div class="tonearm-base"></div>
+    <div class="tonearm" id="tonearm"></div>
+    <div class="play-dot" id="playDot"></div>
+  </div>
+</div>
+
+<audio id="bgMusic" preload="auto" loop>
+  <source src="https://m10.music.126.net/20260603203445/9373537d5ac4498457acfc08bdd4a1c9/ymusic/0f09/555a/510f/8ca169a3e6b040f6c578fefe9c7d2e6d.mp3?vuutv=DTAELCoE4PuEpqY9H/b2pY/2js0n1iAIa5WUpI3Rp3lvMusMAb6HRK1Faw066teMQ87LHAayPcFk3S79f5kJ0rAa312rH5ShqQ810u9stcDe5PigR3+XZ2oNbQxj8oCfPX/SaejywDHHVybTbTM7SszCgbOxO3QfpawLgntjanosDrgVK4/H2ZOkW0ErwVfP+gDeCtMEMTD2/VLaXDQ/sYvldmoBpr21qLSvum4Mt4ChxJihEApojulbkBwx7liVodDftvGkWZQmo2B8ZphwJ6UT1OBs0Uk5RLXgMVR9P7rPPplYbtSp3bQKI7yX8iOcLC1n6i9/GF0UDcdS86siDI71hzSHx0OmwFuYFIn2wprFpzS78O5HynsM8zUokmpp&cdntag=bWFyaz1vc193ZWIscXVhbGl0eV9zdGFuZGFyZA" type="audio/mpeg">
+</audio>
+
+<div id="deck">
+
+  <!-- ══════════ 1. 封面 · dark hero ══════════ -->
+  <section class="slide dark hero center" data-title="封面" data-animate="hero">
+    <!-- 水墨人物 -->
+    <div class="ink-fig" style="bottom:8%;left:5%;width:130px;height:180px;opacity:.35;">
+      <svg viewBox="0 0 130 180"><ellipse cx="65" cy="46" rx="28" ry="9" fill="currentColor" opacity=".6"/><path d="M40,46 Q48,26 65,24 Q82,26 90,46" fill="currentColor" opacity=".35"/><path d="M52,54 Q65,50 78,54 L75,100 Q65,104 55,100 Z" fill="currentColor" opacity=".4"/><path d="M20,118 Q65,106 110,118 Q65,126 20,118 Z" fill="currentColor" opacity=".25"/><line x1="60" y1="50" x2="30" y2="132" stroke="currentColor" stroke-width=".8" opacity=".35"/></svg>
+    </div>
+    <div class="col center fill" style="position:relative;z-index:1">
+      <p class="kicker" data-anim="line">中 国 伤 感 诗 词</p>
+      <h1 class="display-zh" data-anim="line">此情可待</h1>
+      <div class="ink-line" data-anim="line" style="margin-top:3vh;"></div>
+      <p class="lead" data-anim="line" style="margin-top:2vh;">此情可待成追忆 · 只是当时已惘然</p>
+      <div class="seal" data-anim="line" style="margin-top:3vh;border-color:currentColor;color:currentColor">羊羽</div>
+    </div>
+    <div class="foot">
+      <span class="title">羊羽ppt · 水墨出品</span>
+      <span>1 / 8</span>
+    </div>
+  </section>
+
+  <!-- ══════════ 2. 宋 · light hero ══════════ -->
+  <section class="slide light hero center" data-title="宋代" data-animate="hero">
+    <div class="ink-fig" style="top:4%;right:6%;width:80px;height:230px;opacity:.3;">
+      <svg viewBox="0 0 80 230"><line x1="40" y1="0" x2="40" y2="230" stroke="currentColor" stroke-width="2.2" opacity=".4"/><line x1="35" y1="50" x2="45" y2="50" stroke="currentColor" stroke-width="1.2" opacity=".3"/><line x1="35" y1="115" x2="45" y2="115" stroke="currentColor" stroke-width="1.2" opacity=".3"/><line x1="35" y1="175" x2="45" y2="175" stroke="currentColor" stroke-width="1.2" opacity=".3"/><path d="M40,68 L20,54 L18,58 Z" fill="currentColor" opacity=".3"/><path d="M40,68 L58,56 L56,60 Z" fill="currentColor" opacity=".25"/><path d="M40,88 L22,76 L20,80 Z" fill="currentColor" opacity=".2"/><path d="M40,135 L56,122 L54,126 Z" fill="currentColor" opacity=".25"/><path d="M40,135 L26,124 L24,128 Z" fill="currentColor" opacity=".2"/><path d="M40,195 L22,182 L20,186 Z" fill="currentColor" opacity=".2"/></svg>
+    </div>
+    <div class="row center fill" style="gap:6vw;position:relative;z-index:1">
+      <div class="ghost" style="position:static;font-family:var(--serif-zh);font-size:22vw;opacity:.05" data-anim="line">宋</div>
+      <div class="col" data-anim="line">
+        <span class="kicker">南 宋</span>
+        <p class="h3-zh" style="writing-mode:vertical-rl">断肠人在天涯</p>
+      </div>
+    </div>
+    <div class="foot"><span class="title">宋代 · 婉约之悲</span><span>2 / 8</span></div>
+  </section>
+
+  <!-- ══════════ 3. 李清照 · light ══════════ -->
+  <section class="slide light" data-title="声声慢" data-animate="directional">
+    <div class="ink-fig" style="bottom:8%;right:5%;width:100px;height:200px;opacity:.32;">
+      <svg viewBox="0 0 100 200"><ellipse cx="50" cy="30" rx="20" ry="14" fill="currentColor" opacity=".5"/><ellipse cx="50" cy="44" rx="11" ry="13" fill="none" stroke="currentColor" stroke-width=".7" opacity=".2"/><path d="M34,56 Q50,50 66,56 L70,132 Q50,140 30,132 Z" fill="currentColor" opacity=".25"/><path d="M32,58 Q50,52 68,58 L70,104 Q50,110 30,104 Z" fill="currentColor" opacity=".1"/><path d="M34,60 L18,82 L20,88 L38,70 Z" fill="currentColor" opacity=".2"/><path d="M66,60 L82,82 L80,88 L62,70 Z" fill="currentColor" opacity=".15"/></svg>
+    </div>
+    <div class="chrome" data-anim="left"><div class="left"><span>Vol. I</span><span class="sep"></span><span>李清照</span></div><div class="right"><span>南宋</span></div></div>
+    <div class="split fill" style="position:relative;z-index:1">
+      <div class="col" data-anim="left" style="gap:1.5vh">
+        <span class="kicker">《 声 声 慢 》</span>
+        <div class="seal" style="width:44px;height:44px;font-size:13px;border-width:2px">易安</div>
+        <p class="meta" style="margin-top:2vh">十四叠字开篇<br>国破家亡后的孤绝</p>
+      </div>
+      <div class="verse-v" data-anim="right">
+        <em>寻寻觅觅</em>，冷冷清清，凄凄惨惨戚戚。乍暖还寒时候，最难将息。三杯两盏淡酒，怎敌他、<em>晚来风急</em>。
+      </div>
+    </div>
+    <div class="foot"><span class="title">李清照 · 声声慢</span><span>3 / 8</span></div>
+  </section>
+
+  <!-- ══════════ 4. 李商隐 · dark ══════════ -->
+  <section class="slide dark" data-title="锦瑟" data-animate="directional">
+    <div class="ink-fig" style="top:0;left:0;width:150px;height:190px;opacity:.35;">
+      <svg viewBox="0 0 150 190"><path d="M8,190 L12,135 Q16,100 24,74 Q32,50 46,32 Q55,18 66,6" fill="none" stroke="currentColor" stroke-width="2.5" opacity=".5"/><path d="M24,74 Q50,64 74,56" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".3"/><path d="M46,32 Q62,22 80,18 Q92,14 104,10" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".25"/><circle cx="74" cy="56" r="3" fill="currentColor" opacity=".25"/><circle cx="82" cy="59" r="2" fill="currentColor" opacity=".18"/><circle cx="104" cy="10" r="2.5" fill="currentColor" opacity=".2"/></svg>
+    </div>
+    <div class="chrome" data-anim="left"><div class="left"><span>Vol. II</span><span class="sep"></span><span>李商隐</span></div><div class="right"><span>晚唐</span></div></div>
+    <div class="split fill" style="position:relative;z-index:1">
+      <div class="col" data-anim="left" style="gap:1.5vh">
+        <span class="kicker">《 锦 瑟 》</span>
+        <div class="seal" style="width:44px;height:44px;font-size:13px;border-width:2px;border-color:currentColor">义山</div>
+        <p class="meta" style="margin-top:2vh">说不清道不明<br>人生最深的怅惘</p>
+      </div>
+      <div class="verse-v" data-anim="right">
+        锦瑟无端五十弦，一弦一柱思<em>华年</em>。庄生晓梦迷蝴蝶，望帝春心托杜鹃。<em>此情可待成追忆</em>，只是当时已惘然。
+      </div>
+    </div>
+    <div class="foot"><span class="title">李商隐 · 锦瑟</span><span>4 / 8</span></div>
+  </section>
+
+  <!-- ══════════ 5. 清 · light hero ══════════ -->
+  <section class="slide light hero center" data-title="清代" data-animate="hero">
+    <div class="ink-fig" style="bottom:6%;left:5%;width:110px;height:150px;opacity:.3;">
+      <svg viewBox="0 0 110 150"><path d="M55,150 Q50,115 42,88 Q35,64 28,40" fill="none" stroke="currentColor" stroke-width="2" opacity=".4"/><path d="M55,150 Q60,114 68,84 Q78,58 84,34" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".3"/><path d="M55,150 Q46,120 34,100 Q24,84 18,72" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".25"/><path d="M42,84 Q36,74 40,64 Q44,62 46,66 Q50,62 52,64 Q54,70 50,78 Z" fill="currentColor" opacity=".18"/></svg>
+    </div>
+    <div class="row center fill" style="gap:6vw;position:relative;z-index:1">
+      <div class="ghost" style="position:static;font-family:var(--serif-zh);font-size:22vw;opacity:.05" data-anim="line">清</div>
+      <div class="col" data-anim="line">
+        <span class="kicker">清 代</span>
+        <p class="h3-zh" style="writing-mode:vertical-rl">浮生若梦 · 为欢几何</p>
+      </div>
+    </div>
+    <div class="foot"><span class="title">清代 · 人间词话</span><span>5 / 8</span></div>
+  </section>
+
+  <!-- ══════════ 6. 纳兰 · dark ══════════ -->
+  <section class="slide dark" data-title="木兰花" data-animate="directional">
+    <div class="ink-fig" style="bottom:5%;right:6%;width:80px;height:180px;opacity:.35;">
+      <svg viewBox="0 0 80 180"><path d="M24,24 Q40,14 56,24 Q58,28 56,32 Q40,26 24,32 Q22,28 24,24 Z" fill="currentColor" opacity=".4"/><ellipse cx="40" cy="42" rx="9" ry="11" fill="none" stroke="currentColor" stroke-width=".6" opacity=".18"/><path d="M28,54 Q40,48 52,54 L54,122 Q40,128 26,122 Z" fill="currentColor" opacity=".25"/><path d="M28,56 L14,76 L16,82 L32,66 Z" fill="currentColor" opacity=".2"/><path d="M52,56 L66,76 L64,82 L48,66 Z" fill="currentColor" opacity=".15"/><rect x="30" y="74" width="20" height="14" rx="1" fill="currentColor" opacity=".15" transform="rotate(-3,40,81)"/></svg>
+    </div>
+    <div class="chrome" data-anim="left"><div class="left"><span>Vol. III</span><span class="sep"></span><span>纳兰性德</span></div><div class="right"><span>清</span></div></div>
+    <div class="split fill" style="position:relative;z-index:1">
+      <div class="col" data-anim="left" style="gap:1.5vh">
+        <span class="kicker">《 木兰花 》</span>
+        <div class="seal" style="width:44px;height:44px;font-size:13px;border-width:2px;border-color:currentColor">容若</div>
+        <p class="meta" style="margin-top:2vh">一句"人生若只如初见"<br>世间最深的遗憾</p>
+      </div>
+      <div class="verse-v" data-anim="right">
+        <em>人生若只如初见</em>，何事秋风悲画扇。等闲变却故人心，却道故人心<em>易变</em>。
+      </div>
+    </div>
+    <div class="foot"><span class="title">纳兰性德 · 木兰花</span><span>6 / 8</span></div>
+  </section>
+
+  <!-- ══════════ 7. 苏轼 · light ══════════ -->
+  <section class="slide light" data-title="江城子" data-animate="directional">
+    <!-- 真实水墨画 -->
+    <div class="ink-fig" style="top:-5%;right:-3%;width:45%;height:65%;opacity:.14;">
+      <img src="https://raw.githubusercontent.com/wuyoscar/gpt_image_2_skill/master/docs/ink-chinese/ink-landscape.png" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(1.2)" alt="">
+    </div>
+    <div class="ink-fig" style="top:3%;right:6%;width:80px;height:210px;opacity:.35;">
+      <svg viewBox="0 0 80 210"><path d="M40,210 L38,158 Q36,130 34,96 Q32,64 35,38 Q37,20 40,6" fill="none" stroke="currentColor" stroke-width="3" opacity=".4"/><path d="M35,80 Q22,68 12,64" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"/><path d="M36,54 Q48,42 58,38" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3"/><path d="M35,102 Q18,92 10,90" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".2"/><g opacity=".2" fill="none" stroke="currentColor" stroke-width=".6"><path d="M12,64 L4,58 M12,64 L6,64 M12,64 L4,70"/><path d="M58,38 L64,32 M58,38 L64,38 M58,38 L64,44"/></g></svg>
+    </div>
+    <div class="chrome" data-anim="left"><div class="left"><span>Vol. IV</span><span class="sep"></span><span>苏轼</span></div><div class="right"><span>北宋</span></div></div>
+    <div class="split fill" style="position:relative;z-index:1">
+      <div class="col" data-anim="left" style="gap:1.5vh">
+        <span class="kicker">《 江 城 子 》</span>
+        <div class="seal" style="width:44px;height:44px;font-size:13px;border-width:2px">东坡</div>
+        <p class="meta" style="margin-top:2vh">千古第一悼亡词<br>最平淡 · 最深沉</p>
+      </div>
+      <div class="verse-v" data-anim="right">
+        <em>十年生死两茫茫</em>，不思量，自难忘。千里孤坟，无处话凄凉。纵使相逢应不识，尘满面，<em>鬓如霜</em>。
+      </div>
+    </div>
+    <div class="foot"><span class="title">苏轼 · 江城子</span><span>7 / 8</span></div>
+  </section>
+
+  <!-- ══════════ 8. 结束 · dark hero ══════════ -->
+  <section class="slide dark hero center" data-title="结束" data-animate="hero">
+    <!-- 真实水墨画 -->
+    <div class="ink-fig" style="bottom:-5%;left:-3%;width:55%;height:60%;opacity:.12;">
+      <img src="https://raw.githubusercontent.com/wuyoscar/gpt_image_2_skill/master/docs/ink-chinese/ink-landscape.png" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(1.2)" alt="">
+    </div>
+    <!-- 远山 -->
+    <div class="ink-fig" style="bottom:0;left:0;right:0;height:25%;opacity:.18;">
+      <svg viewBox="0 0 1200 280" preserveAspectRatio="none"><path d="M0,280 L0,200 Q120,155 240,182 Q340,200 420,155 Q520,110 620,165 Q720,210 820,145 Q920,100 1020,155 Q1120,195 1200,165 L1200,280 Z" fill="currentColor" opacity=".5"/><path d="M0,280 L0,225 Q160,195 320,215 Q460,235 580,195 Q720,155 840,205 Q960,245 1080,215 Q1160,205 1200,225 L1200,280 Z" fill="currentColor" opacity=".25"/></svg>
+    </div>
+    <div class="col center fill" style="position:relative;z-index:1">
+      <p class="kicker" data-anim="line">— 终 —</p>
+      <h2 class="h1-zh" data-anim="line">此情可待成追忆</h2>
+      <div class="ink-line" data-anim="line" style="margin-top:3vh;"></div>
+      <p class="lead" data-anim="line" style="margin-top:2vh;">只是当时已惘然</p>
+      <div class="seal" data-anim="line" style="margin-top:3vh;border-color:currentColor">羊羽</div>
+      <p class="meta" data-anim="line" style="margin-top:4vh;opacity:.3">羊羽ppt · 水墨出品</p>
+    </div>
+    <div class="foot"><span class="title">此情可待 · 终</span><span>8 / 8</span></div>
+  </section>
+
+</div>
+
+<div id="nav"></div>
+
+<!-- === WebGL 双背景引擎 === -->
+<script>
+const VS=`attribute vec2 position;void main(){gl_Position=vec4(position,0.0,1.0);}`;
+const FS_DARK=`precision highp float;
+uniform vec2 u_resolution;uniform float u_time;uniform vec2 u_mouse;
+vec3 palette(float t,vec3 a,vec3 b,vec3 c,vec3 d){return a+b*cos(6.28318*(c*t+d));}
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_resolution.xy;
+  vec2 p=uv*2.0-1.0;p.x*=u_resolution.x/u_resolution.y;
+  vec2 m=u_mouse*2.0-1.0;m.x*=u_resolution.x/u_resolution.y;
+  float md=length(p-m);
+  float mr=sin(md*15.0-u_time*4.0)*exp(-md*3.0);p+=mr*0.08;
+  vec2 p0=p;
+  for(float i=1.0;i<4.0;i++){
+    p.x+=0.1/i*sin(i*3.0*p.y+u_time*0.4)+0.05;
+    p.y+=0.1/i*cos(i*2.0*p.x+u_time*0.3)-0.05;
+  }
+  float r=length(p);float ang=atan(p.y,p.x);
+  vec3 a=vec3(0.12,0.12,0.13);
+  vec3 b=vec3(0.03,0.04,0.05);
+  vec3 c=vec3(1.0,1.0,1.0);
+  vec3 d=vec3(0.1,0.2,0.4);
+  vec3 col=palette(r*1.5+p0.x*0.5+u_time*0.1,a,b,c,d);
+  float disp=sin(r*25.0-u_time*1.5+ang*2.0)*0.5+0.5;
+  col+=vec3(disp*0.015,disp*0.01,disp*0.02);
+  float hi=pow(sin(p.x*4.0+p.y*3.0+u_time)*0.5+0.5,8.0);
+  col+=hi*0.08;
+  vec3 base=vec3(0.05,0.05,0.06);
+  col=mix(base,col,0.85);
+  gl_FragColor=vec4(col,1.0);
+}`;
+const FS_LIGHT=`precision highp float;
+uniform vec2 u_resolution;uniform float u_time;uniform vec2 u_mouse;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){
+  vec2 i=floor(p),f=fract(p);
+  float a=hash(i),b=hash(i+vec2(1,0));
+  float c=hash(i+vec2(0,1)),d=hash(i+vec2(1,1));
+  vec2 u=f*f*(3.0-2.0*f);
+  return mix(a,b,u.x)+(c-a)*u.y*(1.0-u.x)+(d-b)*u.x*u.y;
+}
+float fbm(vec2 p){
+  float v=0.0,a=0.5;
+  mat2 m=mat2(0.80,0.60,-0.60,0.80);
+  for(int i=0;i<5;i++){v+=a*noise(p);p=m*p*2.02;a*=0.5;}
+  return v;
+}
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_resolution.xy;
+  vec2 p=uv;p.x*=u_resolution.x/u_resolution.y;
+  vec2 m=u_mouse;m.x*=u_resolution.x/u_resolution.y;
+  vec2 md=p-m;float dl=length(md);
+  p+=normalize(md+vec2(0.0001))*exp(-dl*5.0)*0.03;
+  vec2 q=vec2(fbm(p*1.8+u_time*0.07),fbm(p*1.8+vec2(5.2,1.3)+u_time*0.06));
+  vec2 r=vec2(fbm(p*2.0+q*1.3+vec2(1.7,9.2)+u_time*0.05),
+              fbm(p*2.0+q*1.3+vec2(8.3,2.8)+u_time*0.04));
+  float f=fbm(p*2.2+r*1.5);
+  vec3 silverDark=vec3(0.86,0.85,0.84);
+  vec3 paper=vec3(0.955,0.945,0.925);
+  vec3 col=mix(silverDark,paper,f);
+  float ph=r.x*2.2+u_time*0.35;
+  col+=vec3(0.78,0.62,0.92)*sin(ph)*0.055;
+  col+=vec3(0.55,0.72,0.95)*sin(ph*0.8+2.0)*0.05;
+  float hl=smoothstep(0.48,0.92,f);
+  col+=hl*0.06;
+  gl_FragColor=vec4(col,1.0);
+}`;
+const mouse={x:0.5,y:0.5};
+addEventListener('mousemove',e=>{mouse.x=e.clientX/innerWidth;mouse.y=e.clientY/innerHeight});
+function bootGL(canvasId,fsSrc){
+  const canvas=document.getElementById(canvasId);
+  const gl=canvas.getContext('webgl',{alpha:false,antialias:true});
+  if(!gl)return()=>false;
+  const mk=(t,s)=>{const sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);return sh};
+  const prog=gl.createProgram();
+  gl.attachShader(prog,mk(gl.VERTEX_SHADER,VS));
+  gl.attachShader(prog,mk(gl.FRAGMENT_SHADER,fsSrc));
+  gl.linkProgram(prog);gl.useProgram(prog);
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+  const pos=gl.getAttribLocation(prog,'position');
+  gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+  const lRes=gl.getUniformLocation(prog,'u_resolution');
+  const lT=gl.getUniformLocation(prog,'u_time');
+  const lM=gl.getUniformLocation(prog,'u_mouse');
+  const resize=()=>{
+    const d=Math.min(window.devicePixelRatio||1,2);
+    canvas.width=innerWidth*d;canvas.height=innerHeight*d;
+    gl.viewport(0,0,canvas.width,canvas.height);
+  };
+  addEventListener('resize',resize);resize();
+  return(tSec)=>{
+    gl.uniform2f(lRes,canvas.width,canvas.height);
+    gl.uniform1f(lT,tSec);
+    gl.uniform2f(lM,mouse.x,1-mouse.y);
+    gl.drawArrays(gl.TRIANGLES,0,6);
+    return true;
+  };
+}
+let drawDark=null,drawLight=null,glRAF=0,glT0=Date.now();
+function startGL(){
+  if(window.__lowPowerMode||glRAF)return;
+  if(!drawDark)drawDark=bootGL('bg-dark',FS_DARK);
+  if(!drawLight)drawLight=bootGL('bg-light',FS_LIGHT);
+  glT0=Date.now();
+  function loop(){
+    if(window.__lowPowerMode){glRAF=0;return;}
+    const t=(Date.now()-glT0)/1000;
+    drawDark(t);drawLight(t);
+    glRAF=requestAnimationFrame(loop);
+  }
+  glRAF=requestAnimationFrame(loop);
+}
+function stopGL(){if(glRAF)cancelAnimationFrame(glRAF);glRAF=0;}
+startGL();
+addEventListener('ppt-low-power-change',e=>{e.detail.on?stopGL():startGL();});
+</script>
+
+<!-- === 导航系统 === -->
+<script>
+const deck=document.getElementById('deck');
+const slides=deck.querySelectorAll('.slide');
+const nav=document.getElementById('nav');
+let idx=0,total=slides.length,lock=false;
+deck.style.width=(total*100)+'vw';
+slides.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.className='dot';b.dataset.i=i;b.setAttribute('aria-label','Page '+(i+1));
+  b.onclick=()=>go(i);
+  nav.appendChild(b);
+});
+function go(n){
+  if(lock)return;
+  idx=Math.max(0,Math.min(total-1,n));
+  window.__currentSlideIndex=idx;
+  deck.style.transform=`translateX(${-idx*100}vw)`;
+  nav.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  const el=slides[idx];
+  const th=el.dataset.theme||(el.classList.contains('light')?'light':(el.classList.contains('dark')?'dark':'dark'));
+  document.body.classList.toggle('light-bg',th==='light');
+  if(window.__playSlide)setTimeout(()=>window.__playSlide(idx),450);
+  lock=true;setTimeout(()=>lock=false,700);
+}
+
+/* ESC 索引 */
+let overviewOn=false;
+const ov=document.createElement('div');
+ov.id='overview';
+ov.style.cssText='position:fixed;inset:0;z-index:100;background:rgba(var(--ink-rgb),.92);backdrop-filter:blur(12px);display:none;overflow-y:auto;padding:4vh 4vw';
+document.body.appendChild(ov);
+function buildOverview(){
+  ov.innerHTML='';
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:2vh 1.6vw;max-width:90vw;margin:0 auto';
+  slides.forEach((s,i)=>{
+    const card=document.createElement('div');
+    card.style.cssText='cursor:pointer;border-radius:6px;overflow:hidden;border:2px solid '+(i===idx?'rgba(var(--paper-rgb),.8)':'rgba(var(--paper-rgb),.15)')+';transition:border-color .2s';
+    card.onmouseenter=()=>card.style.borderColor='rgba(var(--paper-rgb),.6)';
+    card.onmouseleave=()=>card.style.borderColor=i===idx?'rgba(var(--paper-rgb),.8)':'rgba(var(--paper-rgb),.15)';
+    const wrap=document.createElement('div');
+    wrap.style.cssText='width:100%;aspect-ratio:16/9;overflow:hidden;position:relative;pointer-events:none;background:'+(s.classList.contains('light')?'var(--paper)':'var(--ink)');
+    const clone=s.cloneNode(true);
+    clone.style.cssText='width:100vw;height:100vh;transform:scale('+(1/4.5)+');transform-origin:top left;position:absolute;top:0;left:0;pointer-events:none';
+    wrap.appendChild(clone);
+    const label=document.createElement('div');
+    label.style.cssText='padding:6px 10px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper);opacity:.7';
+    label.textContent=(i+1)+' / '+total;
+    card.appendChild(wrap);card.appendChild(label);
+    card.onclick=()=>{toggleOverview();go(i)};
+    grid.appendChild(card);
+  });
+  ov.appendChild(grid);
+}
+function toggleOverview(){
+  overviewOn=!overviewOn;
+  if(overviewOn){buildOverview();ov.style.display='block';}
+  else ov.style.display='none';
+}
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){e.preventDefault();toggleOverview();return;}
+  if(e.key&&e.key.toLowerCase()==='b'&&!e.metaKey&&!e.ctrlKey&&!e.altKey){e.preventDefault();window.__setLowPowerMode(!window.__lowPowerMode);return;}
+  if(overviewOn)return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '||e.key==='ArrowDown'){if(window.__pipeAdvance&&window.__pipeAdvance())return;go(idx+1);return;}
+  if(e.key==='ArrowLeft'||e.key==='PageUp'||e.key==='ArrowUp')go(idx-1);
+  if(e.key==='Home')go(0);if(e.key==='End')go(total-1);
+});
+let wheelTO=null,wheelAcc=0;
+addEventListener('wheel',e=>{
+  wheelAcc+=e.deltaY+e.deltaX;
+  if(Math.abs(wheelAcc)>50){
+    if(wheelAcc>0&&window.__pipeAdvance&&window.__pipeAdvance()){wheelAcc=0;}
+    else{go(idx+(wheelAcc>0?1:-1));wheelAcc=0;}
+  }
+  clearTimeout(wheelTO);wheelTO=setTimeout(()=>wheelAcc=0,150);
+},{passive:true});
+let tx=0,ty=0;
+addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',e=>{
+  const dx=(e.changedTouches[0].clientX-tx);
+  const dy=(e.changedTouches[0].clientY-ty);
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){if(dx<0&&window.__pipeAdvance&&window.__pipeAdvance())return;go(idx+(dx<0?1:-1));}
+},{passive:true});
+go(0);
+</script>
+
+<!-- === Motion One 动效 === -->
+<script type="module">
+let motion;
+try{motion=await import('./assets/motion.min.js');}
+catch(e1){
+  try{motion=await import('https://cdn.jsdelivr.net/npm/motion@11.11.17/+esm');}
+  catch(e2){
+    console.warn('[motion] CDN failed, disabling animations');
+    document.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none'});
+  }
+}
+if(motion){
+  const{animate,stagger}=motion;
+  document.body.classList.add('motion-ready');
+  const EASE=[.22,1,.36,1];
+  const slides=[...document.querySelectorAll('.slide')];
+  let pipeStep=-1,lastIdx=-1;
+  function resetAnims(slide){slide.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='';el.style.transform='';});}
+  window.__playSlide=function(i){
+    const slide=slides[i];if(!slide)return;lastIdx=i;
+    const recipe=slide.dataset.animate||(slide.classList.contains('hero')?'hero':'cascade');
+    if(window.__lowPowerMode){slide.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none';});return;}
+    if(recipe==='pipeline'){pipeStep=-1;slide.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='0.15';el.style.transform='none';});return;}
+    resetAnims(slide);
+    const all=[...slide.querySelectorAll('[data-anim]')];if(!all.length)return;
+    if(recipe==='directional'){
+      const lefts=all.filter(el=>el.dataset.anim==='left'),rights=all.filter(el=>el.dataset.anim==='right');
+      const divs=all.filter(el=>el.dataset.anim==='divider');
+      const others=all.filter(el=>!['left','right','divider'].includes(el.dataset.anim));
+      if(others.length)animate(others,{opacity:[0,1],y:[12,0]},{duration:.6,delay:stagger(.1,{start:.15}),easing:EASE});
+      if(lefts.length)animate(lefts,{opacity:[0,1],x:[-24,0]},{duration:.8,delay:.35,easing:EASE});
+      if(divs.length)animate(divs,{opacity:[0,.25]},{duration:.5,delay:.9});
+      if(rights.length)animate(rights,{opacity:[0,1],x:[24,0]},{duration:.8,delay:1.0,easing:EASE});
+      return;
+    }
+    if(recipe==='quote'){
+      const lines=all.filter(el=>el.dataset.anim==='line');
+      if(lines.length)animate(lines,{opacity:[0,1],y:[8,0]},{duration:.65,delay:stagger(.55,{start:.3}),easing:[.25,1,.5,1]});
+      return;
+    }
+    animate(all,{opacity:[0,1],y:[16,0]},{duration:.55,delay:stagger(.12,{start:.1}),easing:EASE});
+  };
+}
+</script>
+
+<!-- === 黑胶唱片音乐控制 === -->
+<script>
+(function(){
+  var audio=document.getElementById('bgMusic');
+  var vinyl=document.getElementById('vinylPlayer');
+  var toast=document.getElementById('musicToast');
+  var playing=false;
+  function play(){audio.play().then(function(){playing=true;vinyl.classList.add('playing');toast.classList.remove('show');}).catch(function(){});}
+  function pause(){audio.pause();playing=false;vinyl.classList.remove('playing');}
+  function toggle(){playing?pause():play();}
+  vinyl.addEventListener('click',toggle);
+  setTimeout(function(){toast.classList.add('show');},500);
+  setTimeout(function(){toast.classList.remove('show');},6000);
+  var done=false;
+  function auto(){if(!done&&!playing){play();done=true;}}
+  document.addEventListener('click',function(e){if(e.target.closest('.vinyl-player'))return;auto();});
+  document.addEventListener('keydown',auto);
+})();
+</script>
+</body>
+</html>
