@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>计算机科学 · 大学生涯总结</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&family=Noto+Sans+SC:wght@200;300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#fafaf8;--paper-rgb:250,250,248;
+    --ink:#0a0a0a;--ink-rgb:10,10,10;
+    --grey-1:#f0f0ee;--grey-2:#d4d4d2;--grey-3:#737373;
+    --accent:#FFD500;--accent-rgb:255,213,0;--accent-on:#0a0a0a;--accent-bright:#FFE44D;
+    --text-primary:#0a0a0a;--text-secondary:#525252;--text-helper:#737373;
+    --text-placeholder:#a3a3a3;--border-subtle:#e0e0e0;
+    --sans:"Inter","Helvetica Neue","Helvetica","Arial","Segoe UI Variable","Segoe UI",system-ui,-apple-system,sans-serif;
+    --sans-zh:"PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans SC","Microsoft YaHei UI","Microsoft YaHei","微软雅黑",sans-serif;
+    --mono:"JetBrains Mono","IBM Plex Mono","SF Mono","Cascadia Code","Consolas","Courier New",ui-monospace,monospace;
+    --sp-3:8px;--sp-4:12px;--sp-5:16px;--sp-6:24px;--sp-7:32px;--sp-8:40px;--sp-9:48px;--sp-10:64px;--sp-11:80px;--sp-12:96px;--sp-13:160px;
+    --ease-prod:cubic-bezier(.2,0,.38,.9);--ease-exp:cubic-bezier(.4,.14,.3,1);
+    --ease-entry-prod:cubic-bezier(0,0,.38,.9);--ease-entry-exp:cubic-bezier(0,0,.3,1);
+    --nav-safe-bottom:8vh;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--sans),var(--sans-zh);font-feature-settings:"ss01","cv11";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  #deck{position:fixed;inset:0;width:10000vw;height:100vh;display:flex;flex-wrap:nowrap;transition:transform .9s cubic-bezier(.77,0,.175,1);z-index:10;will-change:transform}
+  .slide{width:100vw;height:100vh;flex:0 0 100vw;position:relative;padding:5.5vh 5vw 7vh 5vw;display:flex;flex-direction:column;overflow:hidden;background:var(--paper);color:var(--ink)}
+  .slide.grey{background:var(--grey-1)}.slide.dark{background:var(--ink);color:var(--paper)}.slide.accent{background:var(--accent);color:var(--accent-on)}
+  .slide.split .canvas-card{padding:0;flex-direction:row}
+  body.canvas-mode .slide{padding:0;align-items:stretch;justify-content:stretch}
+  .canvas-card{width:100vw;height:100vh;background:var(--paper);color:var(--ink);padding:5.6vh 5vw 4.4vh;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .slide.dark .canvas-card{background:var(--ink);color:var(--paper)}
+  .slide.accent .canvas-card{background:var(--accent);color:var(--accent-on)}
+  .slide.grey .canvas-card{background:var(--grey-1);color:var(--ink)}
+
+  .chrome-min{display:flex;justify-content:space-between;align-items:flex-start;font-family:var(--mono);font-size:14px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--text-helper);flex:0 0 auto;margin-bottom:var(--sp-9)}
+  .chrome-min.tight{margin-bottom:var(--sp-7)}
+  .slide.dark .chrome-min{color:rgba(255,255,255,.62)}
+  .t-cat{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text-helper);line-height:1.3}
+  .t-cat.accent{color:var(--accent)}
+  .t-meta{font-family:var(--mono);font-size:14px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--text-helper);line-height:1.45}
+  .h-hero-zh{font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:8.4vw;line-height:.96;letter-spacing:-.025em}
+  .h-xl-zh{font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(5vw,8.8vh);line-height:1.05;letter-spacing:-.025em}
+  .lead{font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:1.55vw;line-height:1.4;letter-spacing:-.005em;opacity:.86}
+
+  .dots{background-image:radial-gradient(currentColor 1px,transparent 1px);background-size:12px 12px;opacity:.18}
+
+  /* 纵向时间线 */
+  .timeline-v{--tl-axis-w:24px;--tl-dot:8px;position:relative;margin-top:var(--sp-7)}
+  .timeline-v::before{content:"";position:absolute;left:calc(var(--tl-axis-w)/2);transform:translateX(-50%);top:var(--sp-5);bottom:var(--sp-5);width:1px;background:repeating-linear-gradient(to bottom,currentColor 0 4px,transparent 4px 8px);opacity:.35;pointer-events:none;z-index:0}
+  .tl-node{position:relative;display:grid;grid-template-columns:var(--tl-axis-w) minmax(0,7em) minmax(0,7.6em) 1fr;gap:0 var(--sp-5);align-items:center;padding:var(--sp-7) 0}
+  .tl-node .dot{width:var(--tl-dot);height:var(--tl-dot);border-radius:50%;background:currentColor;justify-self:center;z-index:1}
+  .tl-node.accent .dot{background:var(--accent)}
+  .tl-node .yr{font-family:var(--mono);font-weight:500;font-size:max(14px,1vw);letter-spacing:.04em}
+  .tl-node .multi{font-family:var(--sans);font-weight:200;font-size:clamp(28px,2.8vw,56px);line-height:.95;letter-spacing:-.025em;white-space:nowrap;overflow:hidden;min-width:0}
+  .tl-node .multi .unit{font-size:.36em;font-weight:300;opacity:.6;margin-left:.2em;vertical-align:.42em;letter-spacing:0}
+  .tl-node.accent .multi{color:var(--accent)}
+  .tl-node .desc{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.94vw);line-height:1.55;opacity:.78;min-width:0}
+  .kpi-cell .lbl{font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:.18em;text-transform:uppercase;opacity:.55;margin-bottom:1.2vh}
+  .kpi-cell .nb{font-family:var(--sans);font-weight:250;font-size:3.2vw;line-height:1;letter-spacing:-.025em;font-feature-settings:"tnum"}
+
+  /* 6 格卡 */
+  .sub-grid-3-2{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:1.4vh 1.4vw;flex:1;align-content:stretch;margin-top:3vh}
+  .sub-card{background:var(--grey-1);padding:2.4vh 1.6vw 2vh;display:flex;flex-direction:column;position:relative;min-height:0}
+  .slide.dark .sub-card{background:rgba(255,255,255,.06)}
+  .sub-card.accent{background:var(--accent);color:var(--accent-on)}
+  .sub-card .nb-corner{position:absolute;top:1.6vh;right:1.4vw;font-family:var(--mono);font-size:max(14px,.8vw);letter-spacing:.16em;opacity:.55}
+  .sub-card .ttl{font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(17px,1.5vw);line-height:1.2;letter-spacing:-.015em;margin-bottom:1vh}
+  .sub-card .desc{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.94vw);line-height:1.55;opacity:.78;margin-top:auto}
+
+  /* KPI 塔 */
+  .bar-towers{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2vw;flex:1;align-items:end;margin-top:auto}
+  .bar-tower{display:flex;flex-direction:column;justify-content:flex-end;min-height:0;height:100%}
+  .bar-tower .cap{height:5.6vh;display:flex;align-items:center;justify-content:center;margin-bottom:.4vh;background:var(--grey-1);color:var(--ink)}
+  .bar-tower .body-block{flex:0 1 auto;padding:2vh 1.2vw 2vh;display:flex;flex-direction:column;justify-content:flex-end;min-height:18vh;background:var(--paper);color:var(--ink);border:1px solid var(--grey-2)}
+  .bar-tower .body-block.b-accent{background:var(--accent);color:var(--accent-on);border-color:var(--accent)}
+  .bar-tower .body-block.h-1{min-height:22vh}.bar-tower .body-block.h-2{min-height:30vh}.bar-tower .body-block.h-3{min-height:38vh}
+  .bar-tower .lbl{font-family:var(--mono);font-size:max(14px,.82vw);letter-spacing:.16em;text-transform:uppercase;opacity:.65;margin-bottom:1vh}
+  .bar-tower .nb{font-family:var(--sans);font-weight:250;font-size:max(20px,2.8vw);line-height:1;letter-spacing:-.03em;font-feature-settings:"tnum"}
+  .bar-tower .body-block.b-accent .nb{font-weight:300}
+  .bar-tower .nb .unit{font-size:.36em;font-weight:300;opacity:.7;margin-left:.08em;vertical-align:.4em}
+  .bar-tower .sub{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.92vw);opacity:.75;margin-top:1.2vh;line-height:1.5}
+
+  /* 对仗对比 */
+  .duo-compare{display:grid;grid-template-columns:1fr 1px 1fr;gap:0 3.4vw;flex:1;align-items:stretch;margin-top:4vh}
+  .duo-compare .vrule{background:var(--grey-2);width:1px;align-self:stretch}
+  .duo-compare .col{display:flex;flex-direction:column;gap:1.6vh;padding:0 .4vw}
+  .duo-compare .col-tag{font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:.16em;text-transform:uppercase;color:var(--grey-3);display:flex;align-items:center;gap:.6vw}
+  .duo-compare .col-tag .num{font-weight:600;color:var(--ink);border:1px solid var(--ink);padding:.2em .6em;font-size:.92em}
+  .duo-compare .col.accent .col-tag .num{color:var(--accent);border-color:var(--accent)}
+  .duo-compare .col-ttl{font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:3.6vw;line-height:1;letter-spacing:-.03em}
+  .duo-compare .col.accent .col-ttl{color:var(--accent)}
+  .duo-compare .col-desc{font-family:var(--sans),var(--sans-zh);font-size:max(16px,1.04vw);line-height:1.55;opacity:.78;max-width:30vw}
+  .duo-compare .col-list{list-style:none;display:flex;flex-direction:column;gap:1vh;margin-top:auto;padding-top:2vh;border-top:1px solid var(--grey-2)}
+  .duo-compare .col-list li{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.94vw);line-height:1.5;padding-left:1.4em;position:relative}
+  .duo-compare .col-list li::before{content:"";position:absolute;left:0;top:.6em;width:.5em;height:1px;background:currentColor;opacity:.55}
+  .duo-compare .col.accent .col-list li::before{background:var(--accent);opacity:1}
+
+  /* 四列卡片 */
+  .four-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6vw;margin-top:5vh;flex:1;align-items:stretch}
+  .f-card{padding:3.2vh 1.6vw 2.4vh;display:flex;flex-direction:column;border-top:2px solid currentColor}
+  .f-card.accent{border-top-color:var(--accent)}
+  .f-card .num{font-family:var(--sans);font-weight:200;font-size:min(5vw,9vh);line-height:.85;letter-spacing:-.04em;margin-bottom:1.6vh;color:var(--grey-3)}
+  .f-card.accent .num{color:var(--accent)}
+  .f-card .t{font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:1.6vw;line-height:1.2;margin-bottom:1vh;letter-spacing:-.01em}
+  .f-card .d{font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(16px,.94vw);line-height:1.55;opacity:.72}
+
+  /* 横向时间线 */
+  .timeline-h{--tl-dot:8px;position:relative;flex:1;display:flex;align-items:center}
+  .timeline-h::before{content:"";position:absolute;top:50%;left:5%;right:5%;height:1px;transform:translateY(-50%);background:repeating-linear-gradient(to right,currentColor 0 4px,transparent 4px 8px);opacity:.35;pointer-events:none;z-index:0}
+  .timeline-h .tl-row{position:relative;width:100%;display:grid;grid-template-columns:repeat(5,1fr);align-items:center}
+  .timeline-h .th-node{position:relative;display:flex;justify-content:center}
+  .timeline-h .th-node .dot{width:var(--tl-dot);height:var(--tl-dot);border-radius:50%;background:var(--ink);z-index:1;position:relative}
+  .timeline-h .th-node.accent .dot{background:var(--accent)}
+  .timeline-h .th-node .label{position:absolute;left:50%;transform:translateX(-50%);width:13vw;text-align:center;display:flex;flex-direction:column;gap:.4vh}
+  .timeline-h .th-node.up .label{bottom:calc(50% + 22px)}
+  .timeline-h .th-node.down .label{top:calc(50% + 22px)}
+  .timeline-h .th-node .yr{font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:.05em;color:var(--text-helper);font-weight:500}
+  .timeline-h .th-node.accent .yr{color:var(--accent)}
+  .timeline-h .th-node .name{font-family:var(--sans);font-size:max(16px,1.05vw);font-weight:400;color:var(--text-primary);line-height:1.2;letter-spacing:-.005em}
+  .timeline-h .th-node.accent .name{color:var(--accent)}
+  .timeline-h .th-node .desc{font-family:var(--sans),var(--sans-zh);font-size:max(14px,.84vw);color:var(--text-secondary);font-weight:400;line-height:1.4}
+
+  /* 分栏 */
+  .split-half{display:grid;grid-template-columns:1fr 1fr;gap:0;flex:1;align-items:stretch}
+  .split-half>.half{padding:5vh 3.4vw;display:flex;flex-direction:column;min-width:0}
+  .split-half>.half.b-accent{background:var(--accent);color:var(--accent-on)}
+
+  /* 导航 */
+  #nav{position:fixed;left:50%;bottom:2vh;transform:translateX(-50%);z-index:30;display:flex;gap:10px;padding:0;background:transparent;border:0}
+  #nav .dot{width:6px;height:6px;background:rgba(0,0,0,.28);cursor:pointer;transition:all .25s ease;border:0;padding:0;border-radius:0}
+  #nav .dot:hover{background:rgba(0,0,0,.55)}
+  #nav .dot.active{background:var(--accent);width:18px}
+  body.dark-bg #nav .dot{background:rgba(255,255,255,.32)}
+  body.dark-bg #nav .dot.active{background:var(--accent)}
+  #hint{position:fixed;bottom:2.4vh;right:2.5vw;z-index:30;font-family:var(--mono);font-size:14px;letter-spacing:.14em;text-transform:uppercase;opacity:.4;color:currentColor}
+  body.dark-bg #hint{color:var(--paper);opacity:.4}
+  body.low-power #hint{color:var(--accent);opacity:.72}
+
+  #overview [data-anim]{opacity:1!important;transform:none!important}
+  #overview .slide *{animation:none!important;transition:none!important}
+
+  [data-anim]{opacity:1}
+  body.motion-ready [data-anim]{opacity:0}
+  body.motion-ready [data-anim="left"]{transform:translateX(-24px)}
+  body.motion-ready [data-anim="right"]{transform:translateX(24px)}
+  body.motion-ready [data-anim="line"]{opacity:0;transform:translateY(10px)}
+  body.low-power #deck{transition:none!important}
+  body.low-power *,body.low-power *::before,body.low-power *::after{animation:none!important;transition:none!important}
+  body.low-power.motion-ready [data-anim],body.low-power [data-anim]{opacity:1!important;transform:none!important}
+  body.is-win .tl-node .multi{font-weight:300;letter-spacing:-.02em}
+
+  @media (max-width:900px){
+    .h-hero-zh{font-size:13vw}.h-xl-zh{font-size:8vw}
+    .split-half{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body class="canvas-mode">
+<script>
+  if(/Win/i.test(navigator.platform||navigator.userAgentData?.platform||''))document.body.classList.add('is-win');
+  (function(){const K='guizang-ppt-low-power';const r=matchMedia('(prefers-reduced-motion:reduce)').matches;const s=localStorage.getItem(K);window.__lowPowerMode=s==='1'||(s===null&&r);const h=document.getElementById('hint');if(h)h.textContent=`← → 翻页 · B ${window.__lowPowerMode?'动态':'静态'} · ESC 索引`;window.__setLowPowerMode=function(on,opts={}){window.__lowPowerMode=!!on;document.body.classList.toggle('low-power',window.__lowPowerMode);if(opts.persist!==false)localStorage.setItem(K,window.__lowPowerMode?'1':'0');if(window.__lowPowerMode&&document.getAnimations)document.getAnimations().forEach(a=>a.cancel());const h=document.getElementById('hint');if(h)h.textContent=`← → 翻页 · B ${window.__lowPowerMode?'动态':'静态'} · ESC 索引`;dispatchEvent(new CustomEvent('swiss-low-power-change',{detail:{on:window.__lowPowerMode}}));if(window.__playSlide)window.__playSlide(window.__currentSlideIndex||0)};document.body.classList.toggle('low-power',window.__lowPowerMode)})();
+</script>
+<div id="hint">← → 翻页 · B 静态 · ESC 索引</div>
+
+<div id="deck">
+
+<!-- ============================================================
+     P1 · Cover 封面 (S01)
+     ============================================================ -->
+<section class="slide dark" data-layout="S01" data-animate="hero">
+  <div class="canvas-card" style="position:relative;overflow:hidden">
+    <div class="dots" style="position:absolute;right:0;top:0;width:30vw;height:60vh;opacity:.15;pointer-events:none"></div>
+    <div class="chrome-min">
+      <div class="l">CS · 2020 — 2024</div>
+      <div class="r">PORTFOLIO · 01 / 08</div>
+    </div>
+    <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:2.6vh;position:relative;z-index:1">
+      <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.68);letter-spacing:.22em">COMPUTER SCIENCE · 本科生涯</div>
+      <div style="align-self:flex-start;display:flex;flex-direction:column;gap:1vh">
+        <h1 data-anim="title" style="font-family:var(--sans),var(--sans-zh);font-weight:200;font-size:min(9.6vw,17vh);line-height:.94;letter-spacing:-.025em;color:#fff">计算机科学<br>大学生涯总结</h1>
+        <div data-anim="sub" class="lead" style="color:rgba(255,255,255,.8);max-width:55ch;margin-top:1vh">四年 · 从零到一的旅程<span style="display:inline-block;margin:0 1.4vw">·</span>课程 · 项目 · 竞赛 · 实习</div>
+      </div>
+      <div data-anim="bottom" style="display:grid;grid-template-rows:auto auto;gap:1.6vh;border-top:1px solid rgba(255,255,255,.2);padding-top:2vh">
+        <div style="display:flex;justify-content:space-between;align-items:end">
+          <div class="t-meta" style="color:rgba(255,255,255,.5);letter-spacing:.16em">2020 — 2024</div>
+          <div class="t-meta" style="color:rgba(255,255,255,.5)">→ swipe / arrow keys</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     P2 · 纵向时间线 (S02)
+     ============================================================ -->
+<section class="slide light" data-layout="S02" data-animate="progression">
+  <div class="canvas-card">
+    <header class="chrome-min tight"><div class="l">回顾 · TIMELINE</div><div class="r">S02 · 02 / 08</div></header>
+    <div style="flex:1;padding:0;display:flex;flex-direction:column;gap:0">
+      <div data-anim="line" style="display:flex;flex-direction:column;gap:1vh">
+        <div class="t-cat accent">FOUR YEARS</div>
+        <h2 class="h-xl-zh">从 2020 到 2024</h2>
+      </div>
+      <div class="timeline-v">
+        <div class="tl-node accent"><div class="dot"></div><div class="yr">2020</div><div class="multi">入学<span class="unit">·</span></div><div class="desc">踏入大学校园 · 零基础开始学习编程<br>C 语言与计算机导论 · 初次接触命令行</div></div>
+        <div class="tl-node"><div class="dot"></div><div class="yr">2021</div><div class="multi">筑基<span class="unit">·</span></div><div class="desc">数据结构与算法 · 操作系统原理<br>完成第一个全栈 Web 项目 · 加入技术社团</div></div>
+        <div class="tl-node accent"><div class="dot"></div><div class="yr">2022</div><div class="multi">成长<span class="unit">·</span></div><div class="desc">数据库系统 · 计算机网络 · 编译原理<br>获得首个竞赛奖项 · 开源项目贡献者</div></div>
+        <div class="tl-node"><div class="dot"></div><div class="yr">2023</div><div class="multi">突破<span class="unit">·</span></div><div class="desc">两段实习经历 · AI / 后端 / 前端<br>独立完成毕业设计预研 · 技术博客 50+ 篇</div></div>
+      </div>
+      <div class="kpi-row-4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding-top:2.4vh;border-top:1px solid var(--grey-2);margin-top:1vh">
+        <div class="kpi-cell" style="padding:1.6vh 1.6vw 0;border-left:1px solid var(--grey-2)"><div class="lbl">Course Credits</div><div class="nb">150+</div></div>
+        <div class="kpi-cell" style="padding:1.6vh 1.6vw 0;border-left:1px solid var(--grey-2)"><div class="lbl">Projects</div><div class="nb">15+</div></div>
+        <div class="kpi-cell" style="padding:1.6vh 1.6vw 0;border-left:1px solid var(--grey-2)"><div class="lbl">Awards</div><div class="nb">5</div></div>
+        <div class="kpi-cell" style="padding:1.6vh 1.6vw 0;border-left:1px solid var(--grey-2)"><div class="lbl">Internships</div><div class="nb">3</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     P3 · 六项技能 (S04)
+     ============================================================ -->
+<section class="slide grey" data-layout="S04" data-animate="grid-reveal">
+  <div class="canvas-card">
+    <header class="chrome-min tight"><div class="l">技能 · SKILL SET</div><div class="r">S04 · 03 / 08</div></header>
+    <div style="flex:1;padding:0;display:flex;flex-direction:column;gap:1vh">
+      <div data-anim="line" style="display:flex;flex-direction:column;gap:.6vh">
+        <div class="t-cat accent">SIX CORE AREAS</div>
+        <h2 class="h-xl-zh">大学四年掌握的六个领域</h2>
+      </div>
+      <div class="sub-grid-3-2">
+        <div class="sub-card" data-anim><div class="nb-corner">01</div><i data-lucide="code-2" style="width:2.4vw;height:2.4vw;stroke-width:1.4;margin-bottom:1.6vh;flex-shrink:0"></i><div class="ttl">编程语言</div><div class="desc">C / C++ / Java / Python / TS · 从语法到工程实践</div></div>
+        <div class="sub-card" data-anim><div class="nb-corner">02</div><i data-lucide="layers" style="width:2.4vw;height:2.4vw;stroke-width:1.4;margin-bottom:1.6vh;flex-shrink:0"></i><div class="ttl">数据结构 & 算法</div><div class="desc">线性结构 · 树图 · DP · 贪心 · 竞赛级编程思维</div></div>
+        <div class="sub-card" data-anim><div class="nb-corner">03</div><i data-lucide="database" style="width:2.4vw;height:2.4vw;stroke-width:1.4;margin-bottom:1.6vh;flex-shrink:0"></i><div class="ttl">数据库 & 系统</div><div class="desc">MySQL / PostgreSQL / Redis · SQL 优化 · 设计范式</div></div>
+        <div class="sub-card" data-anim><div class="nb-corner">04</div><i data-lucide="globe" style="width:2.4vw;height:2.4vw;stroke-width:1.4;margin-bottom:1.6vh;flex-shrink:0"></i><div class="ttl">计算机网络</div><div class="desc">TCP/IP 协议栈 · HTTP/HTTPS · DNS · 网络安全基础</div></div>
+        <div class="sub-card accent" data-anim><div class="nb-corner" style="opacity:.75">05</div><i data-lucide="cpu" style="width:2.4vw;height:2.4vw;stroke-width:1.4;margin-bottom:1.6vh;flex-shrink:0"></i><div class="ttl">操作系统 & 体系</div><div class="desc">进程线程 · 内存管理 · Linux 系统编程 · 文件系统</div></div>
+        <div class="sub-card" data-anim><div class="nb-corner">06</div><i data-lucide="brain" style="width:2.4vw;height:2.4vw;stroke-width:1.4;margin-bottom:1.6vh;flex-shrink:0"></i><div class="ttl">人工智能 & 前沿</div><div class="desc">机器学习 · 深度学习 · NLP · LLM 应用开发 · AI 工具</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     P4 · KPI 数据塔 (S06)
+     ============================================================ -->
+<section class="slide light" data-layout="S06" data-animate="measure-up">
+  <div class="canvas-card">
+    <header class="chrome-min tight"><div class="l">数据 · ACHIEVEMENTS</div><div class="r">S06 · 04 / 08</div></header>
+    <div style="flex:1;padding:0;display:flex;flex-direction:column;gap:2vh">
+      <div data-anim="line" style="display:flex;flex-direction:column;gap:.6vh">
+        <div class="t-cat accent">BY THE NUMBERS</div>
+        <h2 class="h-xl-zh">四年数据一览</h2>
+      </div>
+      <div data-anim="up" class="bar-towers" style="margin-top:0">
+        <div class="bar-tower"><div class="cap"><i data-lucide="star" style="width:1.6vw;height:1.6vw;stroke-width:1.4"></i></div><div class="body-block b-accent h-3"><div class="lbl">GPA</div><div class="nb">3.8<span class="unit">/ 4.0</span></div><div class="sub">专业前 10%</div></div></div>
+        <div class="bar-tower"><div class="cap"><i data-lucide="folder-git-2" style="width:1.6vw;height:1.6vw;stroke-width:1.4"></i></div><div class="body-block h-2"><div class="lbl">Projects</div><div class="nb">15<span class="unit">+</span></div><div class="sub">Web / AI / 工具链</div></div></div>
+        <div class="bar-tower"><div class="cap"><i data-lucide="trophy" style="width:1.6vw;height:1.6vw;stroke-width:1.4"></i></div><div class="body-block h-1"><div class="lbl">Awards</div><div class="nb">5</div><div class="sub">算法 / 创新 / 设计</div></div></div>
+        <div class="bar-tower"><div class="cap"><i data-lucide="building-2" style="width:1.6vw;height:1.6vw;stroke-width:1.4"></i></div><div class="body-block h-1"><div class="lbl">Internships</div><div class="nb">3</div><div class="sub">大厂 + 创业公司</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     P5 · 大一 vs 大四 (S08)
+     ============================================================ -->
+<section class="slide dark" data-layout="S08" data-animate="duo-mirror">
+  <div class="canvas-card">
+    <header class="chrome-min" style="color:rgba(255,255,255,.62);margin-bottom:var(--sp-7)"><div class="l">对比 · BEFORE / AFTER</div><div class="r">S08 · 05 / 08</div></header>
+    <div style="flex:1;padding:0;display:flex;flex-direction:column;gap:0">
+      <div data-anim="line" style="display:flex;flex-direction:column;gap:.6vh;margin-bottom:1vh">
+        <div class="t-cat" style="color:var(--accent)">PERSONAL GROWTH</div>
+        <h2 class="h-xl-zh" style="color:#fff">大一 vs 大四</h2>
+      </div>
+      <div class="duo-compare" style="margin-top:2vh">
+        <div class="col">
+          <div class="col-tag"><span class="num">01</span> FRESHMAN</div>
+          <div class="col-ttl" style="color:rgba(255,255,255,.55)">迷茫的开始</div>
+          <p class="col-desc" style="color:rgba(255,255,255,.7)">对计算机一无所知 · 只会写 Hello World · 不知道未来方向</p>
+          <ul class="col-list" style="border-top-color:rgba(255,255,255,.15)">
+            <li style="color:rgba(255,255,255,.65)">面对命令行手足无措</li>
+            <li style="color:rgba(255,255,255,.65)">代码 Debug 以小时计</li>
+            <li style="color:rgba(255,255,255,.65)">Git 冲突吓得不敢提交</li>
+            <li style="color:rgba(255,255,255,.65)">项目？不存在的</li>
+          </ul>
+        </div>
+        <div class="vrule" style="background:rgba(255,255,255,.15)"></div>
+        <div class="col accent">
+          <div class="col-tag"><span class="num">02</span> SENIOR</div>
+          <div class="col-ttl">自信的工程师</div>
+          <p class="col-desc">能独立搭建全栈系统 · 熟读源码 · 有技术判断力</p>
+          <ul class="col-list" style="border-top-color:rgba(255,255,255,.15)">
+            <li>终端是我的第二语言</li>
+            <li>AI 辅助编程如虎添翼</li>
+            <li>开源项目核心贡献者</li>
+            <li>15+ 项目 · 3 段实习</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     P6 · 四条收获 (S19)
+     ============================================================ -->
+<section class="slide light" data-layout="S19" data-animate="four-cards">
+  <div class="canvas-card">
+    <header class="chrome-min tight"><div class="l">收获 · KEY LESSONS</div><div class="r">S19 · 06 / 08</div></header>
+    <div style="flex:1;padding:0;display:flex;flex-direction:column">
+      <div data-anim="line" style="display:flex;flex-direction:column;gap:.6vh;margin-bottom:0">
+        <div class="t-cat accent">FOUR KEY LESSONS</div>
+        <h2 class="h-xl-zh">四年教会我的四件事</h2>
+      </div>
+      <div data-anim="up" class="four-cards">
+        <div class="f-card accent"><div class="num">01</div><div class="t">基础决定上限</div><div class="d">数据结构、操作系统、网络——这些"无用"的基础课，最终决定了能走多远。</div></div>
+        <div class="f-card"><div class="num">02</div><div class="t">动手是最好的学习</div><div class="d">书读百遍不如自己写一遍。15 个项目，每一个都比上一堂课的收获大。</div></div>
+        <div class="f-card"><div class="num">03</div><div class="t">社区的力量</div><div class="d">开源、技术社团、黑客松——和优秀的人一起做有意义的事。</div></div>
+        <div class="f-card"><div class="num">04</div><div class="t">拥抱 AI 工具</div><div class="d">Claude Code / Copilot 不是替代程序员，而是放大每一个开发者的能力。</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     P7 · 横向时间线 (S11)
+     ============================================================ -->
+<section class="slide grey" data-layout="S11" data-animate="timeline-walk">
+  <div class="canvas-card">
+    <header class="chrome-min tight"><div class="l">经历 · EXPERIENCES</div><div class="r">S11 · 07 / 08</div></header>
+    <div style="flex:1;padding:0;display:flex;flex-direction:column;gap:0">
+      <div data-anim="line" style="display:flex;flex-direction:column;gap:.6vh;margin-bottom:3vh">
+        <div class="t-cat accent">JOURNEY MAP</div>
+        <h2 class="h-xl-zh" style="font-size:min(4.4vw,8vh)">项目 · 实习 · 里程碑</h2>
+      </div>
+      <div class="timeline-h">
+        <div class="tl-row">
+          <div class="th-node up accent"><div class="dot"></div><div class="label"><div class="yr">2021 · 春</div><div class="name">第一个 Web 项目</div><div class="desc">学生选课系统</div></div></div>
+          <div class="th-node down"><div class="dot"></div><div class="label"><div class="yr">2022 · 夏</div><div class="name">算法竞赛省奖</div><div class="desc">ACM 铜牌</div></div></div>
+          <div class="th-node up accent"><div class="dot"></div><div class="label"><div class="yr">2023 · 春</div><div class="name">第一段实习</div><div class="desc">后端开发 · 互联网中厂</div></div></div>
+          <div class="th-node down"><div class="dot"></div><div class="label"><div class="yr">2023 · 秋</div><div class="name">开源贡献者</div><div class="desc">Apache 项目 PR merged</div></div></div>
+          <div class="th-node up accent"><div class="dot"></div><div class="label"><div class="yr">2024 · 春</div><div class="name">毕业设计</div><div class="desc">AI + 开发工具</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     P8 · 收尾 Closing (S10)
+     ============================================================ -->
+<section class="slide split" data-layout="S10" data-animate="split-statement">
+  <div class="canvas-card">
+    <div class="split-half">
+      <div class="half b-accent" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between;position:relative;overflow:hidden">
+        <div class="chrome-min" style="margin-bottom:0;position:relative;z-index:1"><div class="l">08 / 08</div><div class="r">CLOSING</div></div>
+        <div data-anim="manifesto" style="display:flex;flex-direction:column;gap:2vh;position:relative;z-index:1">
+          <div class="t-meta" style="color:rgba(0,0,0,.6);letter-spacing:.22em;margin-bottom:1.6vh">MANIFESTO</div>
+          <h2 style="font-family:var(--sans),var(--sans-zh);font-size:min(8vw,14vh);line-height:.94;letter-spacing:-.025em;font-weight:200;color:var(--accent-on)">Keep coding.<br>Stay <span style="font-style:italic;font-weight:300">curious</span>.</h2>
+          <div style="font-family:var(--sans),var(--sans-zh);font-size:max(14px,1vw);line-height:1.6;color:rgba(0,0,0,.75);font-weight:400;max-width:36ch;margin-top:1.4vh">四年不是终点，而是技术生涯的起点。</div>
+        </div>
+        <div data-anim="signature" style="display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(0,0,0,.18);padding-top:2vh;position:relative;z-index:1">
+          <div class="t-meta" style="color:rgba(0,0,0,.55)">计算机科学 · 2024 届</div>
+          <div class="t-meta" style="color:rgba(0,0,0,.55)">2020 — 2024</div>
+        </div>
+      </div>
+      <div class="half" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between">
+        <div class="chrome-min"><div class="l">TAKEAWAYS</div><div class="r">03 THINGS</div></div>
+        <div data-anim="rules" style="display:flex;flex-direction:column;gap:0;flex:1;justify-content:center">
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.6vh 0;border-top:1px solid var(--border-subtle)">
+            <div style="font-family:var(--sans);font-weight:200;font-size:min(4.4vw,7.8vh);line-height:.9;color:var(--text-primary)">01</div>
+            <div><h3 style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(18px,1.8vw);line-height:1.2;letter-spacing:-.015em;color:var(--text-primary);margin-bottom:1vh">计算机科学是一种思维方式</h3><p style="font-family:var(--sans),var(--sans-zh);font-size:max(16px,.94vw);line-height:1.6;color:var(--text-secondary);font-weight:400">不只学会写代码，更学会如何拆解问题、抽象建模、系统思考。</p></div>
+          </div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.6vh 0;border-top:1px solid var(--border-subtle)">
+            <div style="font-family:var(--sans);font-weight:200;font-size:min(4.4vw,7.8vh);line-height:.9;color:var(--text-primary)">02</div>
+            <div><h3 style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(18px,1.8vw);line-height:1.2;letter-spacing:-.015em;color:var(--text-primary);margin-bottom:1vh">技术永远在变，学习能力不变</h3><p style="font-family:var(--sans),var(--sans-zh);font-size:max(16px,.94vw);line-height:1.6;color:var(--text-secondary);font-weight:400">从 C 到 Python 到 AI，框架会过时，但快速学习的能力是永恒的资产。</p></div>
+          </div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.6vh 0;border-top:1px solid var(--border-subtle);border-bottom:2px solid var(--accent)">
+            <div style="font-family:var(--sans);font-weight:200;font-size:min(4.4vw,7.8vh);line-height:.9;color:var(--accent)">03</div>
+            <div><h3 style="font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(18px,1.8vw);line-height:1.2;letter-spacing:-.015em;color:var(--accent);margin-bottom:1vh">最好的作品是下一个</h3><p style="font-family:var(--sans),var(--sans-zh);font-size:max(16px,.94vw);line-height:1.6;color:var(--text-secondary);font-weight:400">四年只是一个开始。技术的世界无限广阔，永远保持好奇，永远在路上。</p></div>
+          </div>
+        </div>
+        <div data-anim="foot" class="t-meta" style="color:var(--text-helper);text-align:right">→ 完 · 2020 — 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div id="nav"></div>
+
+<script>
+const deck=document.getElementById('deck');const slides=deck.querySelectorAll('.slide');const nav=document.getElementById('nav');
+let idx=0,total=slides.length,lock=false;deck.style.width=(total*100)+'vw';
+slides.forEach((s,i)=>{const b=document.createElement('button');b.className='dot';b.dataset.i=i;b.setAttribute('aria-label','Page '+(i+1));b.onclick=()=>go(i);nav.appendChild(b)});
+function go(n){if(lock)return;idx=Math.max(0,Math.min(total-1,n));window.__currentSlideIndex=idx;deck.style.transform=`translateX(${-idx*100}vw)`;nav.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===idx));const el=slides[idx];const isDark=el.classList.contains('dark')||el.classList.contains('accent');document.body.classList.toggle('dark-bg',isDark);if(window.__playSlide)setTimeout(()=>window.__playSlide(idx),450);lock=true;setTimeout(()=>lock=false,700)}
+let overviewOn=false;const ov=document.createElement('div');ov.id='overview';ov.style.cssText='position:fixed;inset:0;z-index:100;background:rgba(250,250,248,.96);backdrop-filter:blur(12px);display:none;overflow-y:auto;padding:4vh 4vw';document.body.appendChild(ov);
+function buildOverview(){ov.innerHTML='';const g=document.createElement('div');g.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:2vh 1.6vw;max-width:90vw;margin:0 auto';slides.forEach((s,i)=>{const c=document.createElement('div');c.style.cssText='cursor:pointer;overflow:hidden;border:2px solid '+(i===idx?'var(--accent)':'rgba(0,0,0,.12)')+';transition:border-color .2s';c.onmouseenter=()=>c.style.borderColor='rgba(0,0,0,.4)';c.onmouseleave=()=>c.style.borderColor=i===idx?'var(--accent)':'rgba(0,0,0,.12)';const w=document.createElement('div');const isDark=s.classList.contains('dark')||s.classList.contains('accent');w.style.cssText='width:100%;aspect-ratio:16/9;overflow:hidden;position:relative;pointer-events:none;background:'+(isDark?'var(--ink)':'var(--paper)');const cl=s.cloneNode(true);cl.style.cssText='width:100vw;height:100vh;transform:scale('+(1/4.5)+');transform-origin:top left;position:absolute;top:0;left:0;pointer-events:none';w.appendChild(cl);const lb=document.createElement('div');lb.style.cssText='padding:6px 10px;font-family:var(--mono);font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);opacity:.7';lb.textContent=(i+1)+' / '+total;c.appendChild(w);c.appendChild(lb);c.onclick=()=>{toggleOverview();go(i)};g.appendChild(c)});ov.appendChild(g)}
+function toggleOverview(){overviewOn=!overviewOn;if(overviewOn){buildOverview();ov.style.display='block'}else{ov.style.display='none'}}
+addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();toggleOverview();return}if(e.key&&e.key.toLowerCase()==='b'&&!e.metaKey&&!e.ctrlKey&&!e.altKey){e.preventDefault();window.__setLowPowerMode(!window.__lowPowerMode);return}if(overviewOn)return;if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '||e.key==='ArrowDown'){if(window.__pipeAdvance&&window.__pipeAdvance())return;go(idx+1);return}if(e.key==='ArrowLeft'||e.key==='PageUp'||e.key==='ArrowUp')go(idx-1);if(e.key==='Home')go(0);if(e.key==='End')go(total-1)})
+let wheelTO=null,wheelAcc=0;addEventListener('wheel',e=>{wheelAcc+=e.deltaY+e.deltaX;if(Math.abs(wheelAcc)>50){if(wheelAcc>0&&window.__pipeAdvance&&window.__pipeAdvance()){wheelAcc=0}else{go(idx+(wheelAcc>0?1:-1));wheelAcc=0}}clearTimeout(wheelTO);wheelTO=setTimeout(()=>wheelAcc=0,150)},{passive:true})
+let tx=0,ty=0;addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true})
+addEventListener('touchend',e=>{const dx=(e.changedTouches[0].clientX-tx);const dy=(e.changedTouches[0].clientY-ty);if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){if(dx<0&&window.__pipeAdvance&&window.__pipeAdvance())return;go(idx+(dx<0?1:-1))}},{passive:true})
+go(0);
+</script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+
+<!-- Motion One -->
+<script type="module">
+let motion;
+try{motion=await import('./assets/motion.min.js')}catch(e1){try{motion=await import('https://cdn.jsdelivr.net/npm/motion@11.11.17/+esm')}catch(e2){console.warn('[motion] failed');document.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none'})}}
+if(motion){const{animate}=motion;document.body.classList.add('motion-ready');const EP=[.2,0,.38,.9];const EE=[0,0,.3,1];const slides=[...document.querySelectorAll('.slide')];let lastIdx=-1;function ra(s){s.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='';el.style.transform=''})}const fd=(el,o={})=>animate(el,{opacity:[0,1],y:[o.y??12,0]},{duration:o.duration??.6,delay:o.delay??0,easing:o.easing??EE});
+function rH(s,a){const c=s.querySelector('.chrome-min');if(c)animate(c,{opacity:[0,1]},{duration:.24,easing:EP});const t=s.querySelector('[data-anim="title"]');if(t)fd(t,{delay:.2,duration:.9,y:16});const sb=s.querySelector('[data-anim="sub"]');if(sb)fd(sb,{delay:.55,duration:.7,y:10});const b=s.querySelector('[data-anim="bottom"]');if(b)fd(b,{delay:.8,duration:.6,y:8})}
+function rP(s,a){const h=s.querySelector('[data-anim="line"]');if(h)fd(h,{duration:.6,y:10});const ns=[...s.querySelectorAll('.tl-node')];ns.forEach((n,i)=>{const b=.35+i*.32;animate(n,{opacity:[0,1],y:[14,0]},{duration:.55,delay:b,easing:EE});const m=n.querySelector('.multi');if(m)animate(m,{scale:[.92,1],opacity:[0,1]},{duration:.5,delay:b+.12,easing:EE})});const ks=[...s.querySelectorAll('.kpi-cell')];ks.forEach((c,i)=>animate(c,{opacity:[0,1],y:[8,0]},{duration:.4,delay:1.4+i*.07,easing:EP}))}
+function rG(s,a){const h=s.querySelector('[data-anim="line"]');if(h)fd(h,{duration:.6,y:10});const cs=[...s.querySelectorAll('.sub-card')];cs.forEach((c,i)=>animate(c,{opacity:[0,1],y:[20,0],scale:[.96,1]},{duration:.5,delay:.3+i*.09,easing:EE}))}
+function rM(s,a){const h=s.querySelector('[data-anim="line"]');if(h)fd(h,{duration:.6,y:10});const ts=[...s.querySelectorAll('.bar-tower')];ts.forEach((t,i)=>{const b=t.querySelector('.body-block');if(b){b.style.transformOrigin='bottom center';animate(b,{opacity:[0,1],scaleY:[.05,1]},{duration:.7,delay:.35+i*.12,easing:EE})}const c=t.querySelector('.cap');if(c)animate(c,{opacity:[0,1],y:[-8,0]},{duration:.4,delay:.85+i*.12,easing:EP})})}
+function rD(s,a){const h=s.querySelector('[data-anim="line"]');if(h)fd(h,{duration:.6,y:10});const cs=[...s.querySelectorAll('.duo-compare .col')];const v=s.querySelector('.duo-compare .vrule');if(cs[0])animate(cs[0],{opacity:[0,1],x:[-24,0]},{duration:.65,delay:.4,easing:EE});if(v){v.style.transformOrigin='center';animate(v,{opacity:[0,1],scaleY:[0,1]},{duration:.55,delay:.55,easing:EE})}if(cs[1])animate(cs[1],{opacity:[0,1],x:[24,0]},{duration:.65,delay:.7,easing:EE})}
+function rF(s,a){const h=s.querySelector('[data-anim="line"]');if(h){const t=h.querySelector(':scope>div:nth-child(2)');if(t)animate(t,{opacity:[0,1],y:[14,0]},{duration:.55,delay:.4,easing:EE})}const g=s.querySelector('[data-anim="up"]');if(!g)return;animate(g,{opacity:[0,1]},{duration:.3,delay:.55,easing:EP});const cs=[...g.children];cs.forEach((c,i)=>animate(c,{opacity:[0,1],y:[18,0]},{duration:.55,delay:.7+i*.13,easing:EE}))}
+function rT(s,a){const h=s.querySelector('[data-anim="line"]');if(h)fd(h,{duration:.55,y:10});const tl=s.querySelector('.timeline-h');if(tl)animate(tl,{opacity:[0,1]},{duration:.4,delay:.35,easing:EP});const ns=[...s.querySelectorAll('.timeline-h .th-node')];ns.forEach((n,i)=>{const b=.55+i*.18;const d=n.querySelector('.dot');const l=n.querySelector('.label');if(d){d.style.transformOrigin='center';animate(d,{opacity:[0,1],scale:[.2,1]},{duration:.45,delay:b,easing:EE})}if(l){const fy=n.classList.contains('up')?8:-8;animate(l,{opacity:[0,1],transform:[`translate(-50%, ${fy}px)`,'translate(-50%, 0px)']},{duration:.5,delay:b+.12,easing:EE})}})}
+function rSS(s,a){const hs=[...s.querySelectorAll('.half')];if(hs[0]){animate(hs[0],{opacity:[0,1]},{duration:.4,easing:EP});const ks=hs[0].querySelectorAll('h2');ks.forEach((k,i)=>animate(k,{opacity:[0,1],y:[24,0]},{duration:.7,delay:.25+i*.55,easing:EE}))}if(hs[1]){animate(hs[1],{opacity:[0,1]},{duration:.4,delay:.3,easing:EP});const is=[...hs[1].querySelectorAll('[data-anim="rules"]>div')];is.forEach((l,i)=>animate(l,{opacity:[0,1],x:[20,0]},{duration:.45,delay:1.0+i*.12,easing:EE}))}}
+const RX={hero:rH,progression:rP,'grid-reveal':rG,'measure-up':rM,'duo-mirror':rD,'four-cards':rF,'timeline-walk':rT,'split-statement':rSS};function rs(s){ra(s);document.getAnimations?.().forEach(a=>a.cancel());s.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none'})}function ps(i){const s=slides[i];if(!s)return;lastIdx=i;if(window.__lowPowerMode){rs(s);return}ra(s);s.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none'});const a=[...s.querySelectorAll('[data-anim]')];const r=s.dataset.animate;const fn=RX[r];if(fn){fn(s,a);return}if(a.length)animate(a,{opacity:[0,1],y:[12,0]},{duration:.6,delay:i=>i*.08,easing:EE})}window.__playSlide=ps;window.__pipeAdvance=()=>false;ps(window.__currentSlideIndex||0)}
+</script>
+</body>
+</html>
